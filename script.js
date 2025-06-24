@@ -56,45 +56,56 @@ async function getBotResponse(userInput) {
                         content: userInput
                     }
                 ],
-                model: "llama-3.3-70b-versatile", // Modelo correto conforme documentação
-                temperature: 1.77,
-                max_tokens: 8192,
+                model: "llama3-70b-8192",
+                temperature: 0.7,
+                max_tokens: 1024,
                 top_p: 1,
-                stream: true,
+                stream: false,
                 stop: null
             })
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(`API Error: ${response.status} ${response.statusText}. Details: ${JSON.stringify(errorData)}`);
-            throw new Error(`Erro na API: ${response.status} ${response.statusText}. Detalhes: ${JSON.stringify(errorData)}`);
+            console.error('Error response:', errorData);
+            throw new Error(errorData.error?.message || 'Erro desconhecido na API');
         }
 
         const data = await response.json();
-        console.log('API Response:', data); // Adicionei este log
+        console.log('API Response:', data);
 
-        // Verifica se a estrutura da resposta está correta
-        if (data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
+        // Ajuste para a estrutura de resposta da Groq API
+        if (data.choices && data.choices[0]?.message?.content) {
             return data.choices[0].message.content;
         } else {
-            throw new Error('A resposta da API não contém o conteúdo esperado.');
+            throw new Error('Resposta da API não contém conteúdo válido');
         }
     } catch (error) {
-        console.error('Error fetching bot response:', error.message);
-        throw error;
+        console.error('Error fetching bot response:', error);
+        throw new Error('Falha ao obter resposta do bot: ' + error.message);
     }
 }
 
 function saveConversation() {
-    const messages = Array.from(document.querySelectorAll('.chatbox .message'))
-        .map(msg => ({ text: msg.textContent, sender: msg.classList.contains('user') ? 'user' : 'bot' }));
+    const messages = Array.from(document.querySelectorAll('#chatbox .message'))
+        .map(msg => ({
+            text: msg.textContent,
+            sender: msg.classList.contains('user') ? 'user' : 'bot'
+        }));
     localStorage.setItem('conversation', JSON.stringify(messages));
 }
 
 function loadConversation() {
-    const conversation = JSON.parse(localStorage.getItem('conversation')) || [];
-    conversation.forEach(msg => appendMessage(msg.text, msg.sender));
+    const saved = localStorage.getItem('conversation');
+    if (!saved) return;
+    
+    try {
+        const conversation = JSON.parse(saved);
+        conversation.forEach(msg => appendMessage(msg.text, msg.sender));
+    } catch (e) {
+        console.error('Error loading conversation:', e);
+        localStorage.removeItem('conversation');
+    }
 }
 
 function typeWriterEffect(text, sender) {
@@ -102,15 +113,18 @@ function typeWriterEffect(text, sender) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', sender);
     chatbox.appendChild(messageElement);
-    chatbox.scrollTop = chatbox.scrollHeight;
 
-    let index = 0;
-    const interval = setInterval(() => {
-        if (index < text.length) {
-            messageElement.textContent += text.charAt(index);
-            index++;
-        } else {
-            clearInterval(interval);
+    let i = 0;
+    const speed = 10; // velocidade da digitação (ms por caractere)
+
+    function type() {
+        if (i < text.length) {
+            messageElement.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
-    }, 1); // 0.001 segundos de delay
+    }
+    
+    type();
 }
