@@ -1,4 +1,4 @@
-const API_KEY = "1bfdc6a48a544fac95926f30e3faa5a2"
+const API_KEY = "6cc7e55d9b07491a90088bb0f35dadb0";
 const BASE_URL = "https://api.aimlapi.com/v1";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -50,7 +50,8 @@ async function getBotResponse(userInput) {
         });
 
         if (!response.ok) {
-            throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
+            const errorData = await response.json();
+            throw new Error(`Erro na API: ${response.status} ${response.statusText}. Detalhes: ${JSON.stringify(errorData)}`);
         }
 
         const data = await response.json();
