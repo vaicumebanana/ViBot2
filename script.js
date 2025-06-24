@@ -1,5 +1,5 @@
 const API_KEY = "6cc7e55d9b07491a90088bb0f35dadb0";
-const BASE_URL = "https://api.aimlapi.com";
+const BASE_URL = "https://api.aimlapi.com/v1";
 
 document.addEventListener('DOMContentLoaded', () => {
     loadConversation();
@@ -41,7 +41,12 @@ async function getBotResponse(userInput) {
         // Obter a última resposta do bot
         const lastBotMessage = document.querySelector('.bot:last-child')?.textContent || '';
 
-        const response = await fetch(BASE_URL, {
+        const endpoint = '/chat'; // Ajuste o endpoint conforme a documentação
+        const url = `${BASE_URL}${endpoint}`;
+
+        console.log(`Sending request to ${url}`); // Log the request URL
+
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
