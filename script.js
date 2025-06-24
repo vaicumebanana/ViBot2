@@ -17,7 +17,7 @@ async function sendMessage() {
 
     try {
         const botResponse = await getBotResponse(userInput);
-        appendMessage(botResponse, 'bot');
+        typeWriterEffect(botResponse, 'bot');
         saveConversation();
     } catch (error) {
         appendMessage("Erro: " + error.message, 'bot');
@@ -91,4 +91,22 @@ function saveConversation() {
 function loadConversation() {
     const conversation = JSON.parse(localStorage.getItem('conversation')) || [];
     conversation.forEach(msg => appendMessage(msg.text, msg.sender));
+}
+
+function typeWriterEffect(text, sender) {
+    const chatbox = document.getElementById('chatbox');
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', sender);
+    chatbox.appendChild(messageElement);
+    chatbox.scrollTop = chatbox.scrollHeight;
+
+    let index = 0;
+    const interval = setInterval(() => {
+        if (index < text.length) {
+            messageElement.textContent += text.charAt(index);
+            index++;
+        } else {
+            clearInterval(interval);
+        }
+    }, 1); // 0.001 segundos de delay
 }
