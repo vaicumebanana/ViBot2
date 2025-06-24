@@ -67,10 +67,12 @@ async function getBotResponse(userInput) {
 
         if (!response.ok) {
             const errorData = await response.json();
+            console.error(`API Error: ${response.status} ${response.statusText}. Details: ${JSON.stringify(errorData)}`);
             throw new Error(`Erro na API: ${response.status} ${response.statusText}. Detalhes: ${JSON.stringify(errorData)}`);
         }
 
         const data = await response.json();
+        console.log('Full API Response:', data); // Adicionei este log
 
         // Verifica se a estrutura da resposta está correta
         if (data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
@@ -79,6 +81,7 @@ async function getBotResponse(userInput) {
             throw new Error('A resposta da API não contém o conteúdo esperado.');
         }
     } catch (error) {
+        console.error('Error fetching bot response:', error.message);
         throw error;
     }
 }
