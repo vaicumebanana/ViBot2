@@ -1,4 +1,4 @@
-const API_KEY = "6cc7e55d9b07491a90088bb0f35dadb0";
+const API_KEY = "1bfdc6a48a544fac95926f30e3faa5a2"
 const BASE_URL = "https://api.aimlapi.com/v1";
 
 document.addEventListener('DOMContentLoaded', () => {
