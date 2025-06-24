@@ -43,8 +43,6 @@ async function getBotResponse(userInput) {
     try {
         const url = `${API_CONFIG.URLofAPI}${API_CONFIG.endpoint}`;
 
-        console.log(`Sending request to ${url} with API Key: ${API_CONFIG.apiKey}`); // Log the request URL and API Key
-
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -69,24 +67,18 @@ async function getBotResponse(userInput) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(`API Error: ${response.status} ${response.statusText}. Details: ${JSON.stringify(errorData)}`);
             throw new Error(`Erro na API: ${response.status} ${response.statusText}. Detalhes: ${JSON.stringify(errorData)}`);
         }
 
         const data = await response.json();
-        console.log('API Response:', data);
 
-        // Log the structure of the response to ensure we are accessing the correct fields
-        console.log('Response Structure:', {
-            choices: data.choices,
-            firstChoice: data.choices[0],
-            message: data.choices[0]?.message,
-            content: data.choices[0]?.message?.content
-        });
-
-        return data.choices[0]?.message?.content || 'No content found in the response';
+        // Verifica se a estrutura da resposta está correta
+        if (data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
+            return data.choices[0].message.content;
+        } else {
+            throw new Error('A resposta da API não contém o conteúdo esperado.');
+        }
     } catch (error) {
-        console.error(`Error with API Config ${API_CONFIG.URLofAPI} and API Key ${API_CONFIG.apiKey}:`, error.message);
         throw error;
     }
 }
