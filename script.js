@@ -1,9 +1,5 @@
-const API_KEYS = [
-    "AIzaSyD-YepsfylqOChcTHi-7GiIbzSP0Lj-oFk",
-    "AIzaSyCUu44sgw3iE_o_8Q3WyILNhQk1trtQVKw",
-    "AIzaSyCpseaK6lq5-EA0R5yOraAg_pasMZIbX8M"
-];
-const BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const API_KEY = "AIzaSyD-YepsfylqOChcTHi-7GiIbzSP0Lj-oFk";
+const BASE_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
 document.addEventListener('DOMContentLoaded', () => {
     loadConversation();
@@ -42,43 +38,28 @@ function appendMessage(message, sender) {
 }
 
 async function getBotResponse(userInput) {
-    let errorOccurred = true;
-    let responseText = "";
+    try {
+        const response = await fetch(BASE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                prompt: {
+                    text: userInput
+                }
+            })
+        });
 
-    for (let i = 0; i < API_KEYS.length; i++) {
-        try {
-            const apiKey = API_KEYS[i];
-            const url = `${BASE_URL}?key=${apiKey}`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    prompt: {
-                        text: userInput
-                    }
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`Erro na API com chave ${apiKey}: ${response.status} ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            responseText = data.candidates[0].content.parts[0].text;
-            errorOccurred = false;
-            break;
-        } catch (error) {
-            console.error(`Tentativa com chave ${API_KEYS[i]} falhou:`, error);
+        if (!response.ok) {
+            throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
         }
-    }
 
-    if (errorOccurred) {
-        throw new Error("Todas as chaves de API falharam.");
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+    } catch (error) {
+        throw new Error(`Erro ao obter resposta da API: ${error.message}`);
     }
-
-    return responseText;
 }
 
 function saveConversation() {
