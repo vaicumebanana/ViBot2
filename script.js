@@ -38,6 +38,9 @@ function appendMessage(message, sender) {
 
 async function getBotResponse(userInput) {
     try {
+        // Obter a última resposta do bot
+        const lastBotMessage = document.querySelector('.bot:last-child')?.textContent || '';
+
         const response = await fetch(BASE_URL, {
             method: 'POST',
             headers: {
@@ -45,6 +48,7 @@ async function getBotResponse(userInput) {
                 'Authorization': `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
+                last_response: lastBotMessage,
                 prompt: userInput
             })
         });
