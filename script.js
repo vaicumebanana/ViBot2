@@ -1,5 +1,5 @@
 const API_KEY = "6cc7e55d9b07491a90088bb0f35dadb0";
-const BASE_URL = "https://api.aimlapi.com/v1";
+const BASE_URL = "https://api.aimlapi.com";
 
 document.addEventListener('DOMContentLoaded', () => {
     loadConversation();
