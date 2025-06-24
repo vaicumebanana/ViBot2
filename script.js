@@ -72,7 +72,7 @@ async function getBotResponse(userInput) {
         }
 
         const data = await response.json();
-        console.log('Full API Response:', data); // Adicionei este log
+        console.log('API Response:', data); // Adicionei este log
 
         // Verifica se a estrutura da resposta está correta
         if (data.choices && data.choices.length > 0 && data.choices[0].message && data.choices[0].message.content) {
