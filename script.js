@@ -41,16 +41,15 @@ function appendMessage(message, sender) {
 
 async function getBotResponse(userInput) {
     try {
-        const { baseURL, apiKey, endpoint } = API_CONFIG;
-        const url = `${baseURL}${endpoint}`;
+        const url = `${API_CONFIG.baseURL}${API_CONFIG.endpoint}`;
 
-        console.log(`Sending request to ${url} with API Key: ${apiKey}`); // Log the request URL and API Key
+        console.log(`Sending request to ${url} with API Key: ${API_CONFIG.apiKey}`); // Log the request URL and API Key
 
         const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
+                'Authorization': `Bearer ${API_CONFIG.apiKey}`
             },
             body: JSON.stringify({
                 messages: [
@@ -78,7 +77,7 @@ async function getBotResponse(userInput) {
         console.log('API Response:', data);
         return data.choices[0].message.content; // Supondo que a resposta da API esteja em 'data.choices[0].message.content'
     } catch (error) {
-        console.error(`Error with API Config ${baseURL} and API Key ${apiKey}:`, error.message);
+        console.error(`Error with API Config ${API_CONFIG.baseURL} and API Key ${API_CONFIG.apiKey}:`, error.message);
         throw error;
     }
 }
