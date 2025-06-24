@@ -47,7 +47,7 @@ async function getBotResponse(userInput) {
             // Obter a última resposta do bot
             const lastBotMessage = document.querySelector('.bot:last-child')?.textContent || '';
 
-            const endpoint = '/v1/chat'; // Ajuste o endpoint conforme a documentação
+            const endpoint = '/v1/chat/completions'; // Ajuste o endpoint conforme a documentação
             const url = `${BASE_URL}${endpoint}`;
 
             console.log(`Sending request to ${url} with API Key: ${API_KEY}`); // Log the request URL and API Key
@@ -59,8 +59,19 @@ async function getBotResponse(userInput) {
                     'Authorization': `Bearer ${API_KEY}`
                 },
                 body: JSON.stringify({
-                    last_response: lastBotMessage,
-                    prompt: userInput
+                    model: "mistralai/Mistral-7B-Instruct-v0.2",
+                    messages: [
+                        {
+                            role: "system",
+                            content: "You are a simple agent. You Just respond helping the user with his question."
+                        },
+                        {
+                            role: "user",
+                            content: userInput
+                        }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 256
                 })
             });
 
@@ -70,7 +81,7 @@ async function getBotResponse(userInput) {
             }
 
             const data = await response.json();
-            return data.reply; // Supondo que a resposta da API esteja em 'data.reply'
+            return data.choices[0].message.content; // Supondo que a resposta da API esteja em 'data.choices[0].message.content'
         } catch (error) {
             console.error(`Error with API Key ${API_KEY}:`, error.message);
             // Continue to the next API key
