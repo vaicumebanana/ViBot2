@@ -10,8 +10,10 @@
     <div class="chat-container">
         <h1>ViBot</h1>
         <div id="chatbox" class="chatbox"></div>
-        <input type="text" id="userInput" placeholder="Digite uma mensagem..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendMessage()">Enviar</button>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Digite uma mensagem..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
     </div>
     <div class="footer">
         Made by Vitor Kotinda
