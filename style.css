@@ -6,6 +6,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    flex-direction: column;
 }
 
 .chat-container {
@@ -14,6 +15,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    margin-bottom: 20px;
 }
 
 h1 {
@@ -63,4 +65,10 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+.footer {
+    text-align: center;
+    color: #666;
+    font-size: 12px;
 }
