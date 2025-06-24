@@ -59,7 +59,7 @@ async function getBotResponse(userInput) {
                         content: userInput
                     }
                 ],
-                model: "meta-llama/llama-4-scout-17b-16e-instruct", // Modelo correto
+                model: "llama-3.3-70b-versatile", // Modelo correto conforme documentação
                 temperature: 1.77,
                 max_tokens: 8192,
                 top_p: 1,
