@@ -1,5 +1,5 @@
 const API_CONFIG = {
-    baseURL: "https://api.groq.com/openai",
+    URLofAPI: "https://api.groq.com/openai",
     apiKey: "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",
     endpoint: "/v1/chat/completions"
 };
@@ -41,7 +41,7 @@ function appendMessage(message, sender) {
 
 async function getBotResponse(userInput) {
     try {
-        const url = `${API_CONFIG.baseURL}${API_CONFIG.endpoint}`;
+        const url = `${API_CONFIG.URLofAPI}${API_CONFIG.endpoint}`;
 
         console.log(`Sending request to ${url} with API Key: ${API_CONFIG.apiKey}`); // Log the request URL and API Key
 
@@ -77,7 +77,7 @@ async function getBotResponse(userInput) {
         console.log('API Response:', data);
         return data.choices[0].message.content; // Supondo que a resposta da API esteja em 'data.choices[0].message.content'
     } catch (error) {
-        console.error(`Error with API Config ${API_CONFIG.baseURL} and API Key ${API_CONFIG.apiKey}:`, error.message);
+        console.error(`Error with API Config ${API_CONFIG.URLofAPI} and API Key ${API_CONFIG.apiKey}:`, error.message);
         throw error;
     }
 }
