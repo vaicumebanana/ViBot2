@@ -1,13 +1,8 @@
-const API_CONFIGS = [
-    {
-        baseURL: "https://api.aimlapi.com",
-        apiKey: "6cc7e55d9b07491a90088bb0f35dadb0"
-    },
-    {
-        baseURL: "https://api.groq.com/openai",
-        apiKey: "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"
-    }
-];
+const API_CONFIG = {
+    baseURL: "https://api.groq.com/openai",
+    apiKey: "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",
+    endpoint: "/v1/chat/completions"
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     loadConversation();
@@ -45,51 +40,47 @@ function appendMessage(message, sender) {
 }
 
 async function getBotResponse(userInput) {
-    for (const { baseURL, apiKey } of API_CONFIGS) {
-        try {
-            const endpoint = '/v1/chat/completions'; // Ajuste o endpoint conforme a documentação
-            const url = `${baseURL}${endpoint}`;
+    try {
+        const { baseURL, apiKey, endpoint } = API_CONFIG;
+        const url = `${baseURL}${endpoint}`;
 
-            console.log(`Sending request to ${url} with API Key: ${apiKey}`); // Log the request URL and API Key
+        console.log(`Sending request to ${url} with API Key: ${apiKey}`); // Log the request URL and API Key
 
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: "mistralai/Mistral-7B-Instruct-v0.2",
-                    messages: [
-                        {
-                            role: "system",
-                            content: "You are a travel agent. Be descriptive and helpful"
-                        },
-                        {
-                            role: "user",
-                            content: userInput
-                        }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 256
-                })
-            });
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                messages: [
+                    {
+                        role: "user",
+                        content: userInput
+                    }
+                ],
+                model: "meta-llama/llama-4-scout-17b-16e-instruct",
+                temperature: 1.77,
+                max_completion_tokens: 8192,
+                top_p: 1,
+                stream: true,
+                stop: null
+            })
+        });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error(`API Error: ${response.status} ${response.statusText}. Details: ${JSON.stringify(errorData)}`);
-                throw new Error(`Erro na API: ${response.status} ${response.statusText}. Detalhes: ${JSON.stringify(errorData)}`);
-            }
-
-            const data = await response.json();
-            console.log('API Response:', data);
-            return data.choices[0].message.content; // Supondo que a resposta da API esteja em 'data.choices[0].message.content'
-        } catch (error) {
-            console.error(`Error with API Config ${baseURL} and API Key ${apiKey}:`, error.message);
-            // Continue to the next API config
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error(`API Error: ${response.status} ${response.statusText}. Details: ${JSON.stringify(errorData)}`);
+            throw new Error(`Erro na API: ${response.status} ${response.statusText}. Detalhes: ${JSON.stringify(errorData)}`);
         }
+
+        const data = await response.json();
+        console.log('API Response:', data);
+        return data.choices[0].message.content; // Supondo que a resposta da API esteja em 'data.choices[0].message.content'
+    } catch (error) {
+        console.error(`Error with API Config ${baseURL} and API Key ${apiKey}:`, error.message);
+        throw error;
     }
-    throw new Error('All API configs have been tried and failed.');
 }
 
 function saveConversation() {
