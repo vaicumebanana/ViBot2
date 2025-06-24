@@ -1,4 +1,9 @@
-const API_KEY = "6cc7e55d9b07491a90088bb0f35dadb0";
+const API_KEYS = [
+    "6cc7e55d9b07491a90088bb0f35dadb0",
+    "49ccca3884944148afe00d63da60a276",
+    "6afe493cea54495db230e18139c6e3b5",
+    "c16d5e174e494d0fa916ab4c25bc22d0"
+];
 const BASE_URL = "https://api.aimlapi.com/v1";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -37,37 +42,41 @@ function appendMessage(message, sender) {
 }
 
 async function getBotResponse(userInput) {
-    try {
-        // Obter a última resposta do bot
-        const lastBotMessage = document.querySelector('.bot:last-child')?.textContent || '';
+    for (const API_KEY of API_KEYS) {
+        try {
+            // Obter a última resposta do bot
+            const lastBotMessage = document.querySelector('.bot:last-child')?.textContent || '';
 
-        const endpoint = '/chat'; // Ajuste o endpoint conforme a documentação
-        const url = `${BASE_URL}${endpoint}`;
+            const endpoint = '/chat'; // Ajuste o endpoint conforme a documentação
+            const url = `${BASE_URL}${endpoint}`;
 
-        console.log(`Sending request to ${url}`); // Log the request URL
+            console.log(`Sending request to ${url} with API Key: ${API_KEY}`); // Log the request URL and API Key
 
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`
-            },
-            body: JSON.stringify({
-                last_response: lastBotMessage,
-                prompt: userInput
-            })
-        });
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_KEY}`
+                },
+                body: JSON.stringify({
+                    last_response: lastBotMessage,
+                    prompt: userInput
+                })
+            });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Erro na API: ${response.status} ${response.statusText}. Detalhes: ${JSON.stringify(errorData)}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Erro na API: ${response.status} ${response.statusText}. Detalhes: ${JSON.stringify(errorData)}`);
+            }
+
+            const data = await response.json();
+            return data.reply; // Supondo que a resposta da API esteja em 'data.reply'
+        } catch (error) {
+            console.error(`Error with API Key ${API_KEY}:`, error.message);
+            // Continue to the next API key
         }
-
-        const data = await response.json();
-        return data.reply; // Supondo que a resposta da API esteja em 'data.reply'
-    } catch (error) {
-        throw new Error(`Erro ao obter resposta da API: ${error.message}`);
     }
+    throw new Error('All API keys have been tried and failed.');
 }
 
 function saveConversation() {
