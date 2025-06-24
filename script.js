@@ -3,7 +3,7 @@ const API_KEYS = [
     "AIzaSyCUu44sgw3iE_o_8Q3WyILNhQk1trtQVKw",
     "AIzaSyCpseaK6lq5-EA0R5yOraAg_pasMZIbX8M"
 ];
-const BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={API_KEYS}";
 
 document.addEventListener('DOMContentLoaded', () => {
     loadConversation();
