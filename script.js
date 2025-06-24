@@ -75,7 +75,16 @@ async function getBotResponse(userInput) {
 
         const data = await response.json();
         console.log('API Response:', data);
-        return data.choices[0].message.content; // Supondo que a resposta da API esteja em 'data.choices[0].message.content'
+
+        // Log the structure of the response to ensure we are accessing the correct fields
+        console.log('Response Structure:', {
+            choices: data.choices,
+            firstChoice: data.choices[0],
+            message: data.choices[0]?.message,
+            content: data.choices[0]?.message?.content
+        });
+
+        return data.choices[0]?.message?.content || 'No content found in the response';
     } catch (error) {
         console.error(`Error with API Config ${API_CONFIG.URLofAPI} and API Key ${API_CONFIG.apiKey}:`, error.message);
         throw error;
