@@ -17,8 +17,7 @@ async function sendMessage() {
         appendMessage(botResponse, 'bot');
         saveConversation();
     } catch (error) {
-        appendMessage("Desculpe, não foi possível obter uma resposta do bot. Verifique sua conexão ou tente novamente mais tarde.", 'bot');
-        console.error(error);
+        appendMessage("Erro: " + error.message, 'bot');
     }
 }
 
