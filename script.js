@@ -1,5 +1,5 @@
-const API_KEY = "AIzaSyBbl9XkHhCeIG_hf6Z_XWmgZ4mCwDPGV8E";
-const BASE_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+const API_KEY = "6cc7e55d9b07491a90088bb0f35dadb0";
+const BASE_URL = "https://api.aimlapi.com/v1";
 
 document.addEventListener('DOMContentLoaded', () => {
     loadConversation();
@@ -41,12 +41,11 @@ async function getBotResponse(userInput) {
         const response = await fetch(BASE_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
-                prompt: {
-                    text: userInput
-                }
+                prompt: userInput
             })
         });
 
@@ -55,7 +54,7 @@ async function getBotResponse(userInput) {
         }
 
         const data = await response.json();
-        return data.candidates[0].content.parts[0].text;
+        return data.reply; // Supondo que a resposta da API esteja em 'data.reply'
     } catch (error) {
         throw new Error(`Erro ao obter resposta da API: ${error.message}`);
     }
